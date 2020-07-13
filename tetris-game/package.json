@@ -1,5 +1,6 @@
 {
   "name": "react-tetris",
+  "homepage": "http://ruscinski.pl/react/tetris",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
