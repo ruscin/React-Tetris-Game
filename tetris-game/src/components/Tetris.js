@@ -8,6 +8,7 @@ import { StyledTetrisWrapper, StyledTetris } from './styles/StyledTetris';
 // Custom Hooks
 import { usePlayer } from '../hooks/usePlayer';
 import { useStage } from '../hooks/useStage';
+import { useInterval } from '../hooks/useInterval';
 
 // Components
 import Stage from './Stage';
@@ -33,6 +34,7 @@ const Tetris = () => {
     console.log("test")
     // Reset everything
     setStage(createStage());
+    setDropTime(1000);
     resetPlayer();
     setGameOver(false);
   }
@@ -51,7 +53,16 @@ const Tetris = () => {
     }
   }
 
+  const keyUp = ({ keyCode }) => {
+    if (!gameOver) {
+      if (keyCode === 40) {
+        setDropTime(1000);
+      }
+    }
+  }
+
   const dropPlayer = () => {
+    setDropTime(null);
     drop();
   }
 
@@ -64,26 +75,29 @@ const Tetris = () => {
       } else if (keyCode === 40) {
         dropPlayer();
       }
-      else if(keyCode === 38){
+      else if (keyCode === 38) {
         playerRotate(stage, 1);
       }
     }
   }
+  useInterval(() => {
+    drop();
+  }, dropTime)
 
   return (
-    <StyledTetrisWrapper role="button" tabIndex="0" onKeyDown={e => move(e)}>
+    <StyledTetrisWrapper role="button" tabIndex="0" onKeyDown={e => move(e)} onKeyUp={keyUp}>
       <StyledTetris>
         <Stage stage={stage} />
         <aside>
           {gameOver ? (
             <Display gameOver={gameOver} text="Game Over" />
           ) : (
-            <div>
-              <Display text="Score" />
-              <Display text="Rows" />
-              <Display text="Level" />
-            </div>
-          )}
+              <div>
+                <Display text="Score" />
+                <Display text="Rows" />
+                <Display text="Level" />
+              </div>
+            )}
           <StartButton callback={startGame} />
         </aside>
       </StyledTetris>
